@@ -1,0 +1,64 @@
+name: Release Build & Upload
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    name: Release (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+
+      - name: Build release
+        run: cargo build --release --locked
+
+      - name: Package (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euxo pipefail
+          BIN=target/release/xray-tester
+          test -f "$BIN"
+          ARCHIVE="xray-tester-${{ runner.os }}-${{ github.ref_name }}.tar.gz"
+          tar -C target/release -czf "$ARCHIVE" xray-tester
+          echo "ASSET=$ARCHIVE" >> $GITHUB_ENV
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bin = "target/release/xray-tester.exe"
+          if (!(Test-Path $bin)) { throw "Binary not found: $bin" }
+          $archive = "xray-tester-Windows-${{ github.ref_name }}.zip"
+          Compress-Archive -Path $bin -DestinationPath $archive -Force
+          echo "ASSET=$archive" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Upload asset to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ASSET }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,33 @@
+[package]
+name = "xray-tester"
+version = "0.1.0"
+edition = "2021"
+authors = ["vffuunnyy <vffuunnyy@gmail.com>"]
+description = "Benchmark HTTP/HTTPS requests via SOCKS5 or HTTP proxy with latency stats"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+keywords = ["proxy", "benchmark", "http", "https", "tls"]
+categories = ["command-line-utilities", "network-programming"]
+rust-version = "1.74"
+
+[dependencies]
+tokio = { version = "1.47.1", features = ["rt-multi-thread", "macros", "net", "io-util", "time", "sync"] }
+clap = { version = "4.5.43", features = ["derive"] }
+clap_complete = "4.5.56"
+url = "2.5.4"
+anyhow = "1.0.98"
+thiserror = "2.0.12"
+futures = "0.3.31"
+tokio-socks = "0.5.2"
+httparse = "1.10.1"
+bytes = "1.10.1"
+rustls = { version = "0.23.31", default-features = false, features = ["aws_lc_rs"] }
+tokio-rustls = "0.26.2"
+rustls-pki-types = "1.12.0"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+opt-level = 3
+strip = true
+panic = "abort"
