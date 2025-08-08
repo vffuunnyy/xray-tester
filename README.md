@@ -19,7 +19,7 @@ xray-tester \
   --iterations 100 \
   --concurrency 20 \
   --timeout-ms 5000 \
-  --tls-insecure true
+  --insecure
 ```
 
 Дополнительные параметры:

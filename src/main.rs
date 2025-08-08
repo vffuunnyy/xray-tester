@@ -40,7 +40,7 @@ struct Args {
     #[arg(short = 't', long, default_value_t = 5000)]
     timeout_ms: u64,
 
-    #[arg(short = 'k', long, default_value_t = true)]
+    #[arg(short = 'k', long, action = clap::ArgAction::SetTrue)]
     insecure: bool,
 
     #[command(subcommand)]
