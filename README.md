@@ -43,6 +43,7 @@ xray-tester \
   --iterations 100 \
   --concurrency 2 \
   --timeout 5000 \
+  --success-codes 200-399,418 \
   --insecure
 ```
 
