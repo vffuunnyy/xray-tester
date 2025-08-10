@@ -1,6 +1,6 @@
 [package]
 name = "xray-tester"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["vffuunnyy <vffuunnyy@gmail.com>"]
 description = "Benchmark HTTP/HTTPS requests via SOCKS5 or HTTP proxy with latency stats"
@@ -16,14 +16,13 @@ clap = { version = "4.5.43", features = ["derive"] }
 clap_complete = "4.5.56"
 url = "2.5.4"
 anyhow = "1.0.98"
-thiserror = "2.0.12"
-futures = "0.3.31"
-tokio-socks = "0.5.2"
-httparse = "1.10.1"
+hyper = { version = "1.6.0", features = ["http1", "client"] }
+hyper-util = { version = "0.1.16", features = ["tokio"] }
+http-body-util = "0.1.3"
 bytes = "1.10.1"
-rustls = { version = "0.23.31", default-features = false, features = ["aws_lc_rs"] }
-tokio-rustls = "0.26.2"
-rustls-pki-types = "1.12.0"
+native-tls = "0.2.14"
+tokio-native-tls = "0.3.1"
+futures = "0.3.31"
 
 [profile.release]
 codegen-units = 1
